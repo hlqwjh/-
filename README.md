@@ -1,2 +1,331 @@
-# -
-这是一个面向自主学习者的 AI 学习工作台。你只需要告诉它 想学什么、手头有什么资料、困惑点在哪里，它会为你诊断水平、绘制知识地图、规划学习路径，并用六种教学方式陪你一步步真正学会，而不是再给你一个只会聊天的搜索框
+# 知径 · AI 学习伙伴
+
+> 把资料变成你的学习路径，把「看不懂」变成「讲得清」。
+
+知径是一个面向自主学习者的 AI 学习工作台。你只需要告诉它 **想学什么**、**手头有什么资料**、**卡在哪里**，它会为你诊断水平、绘制知识地图、规划学习路径，并用六种教学方式陪你一步步真正学会——而不是再给你一个只会聊天的搜索框。
+
+---
+
+## 为什么是知径？
+
+大多数 AI 学习工具停留在「问答」：你问，它答；答案很流畅，但学习没有发生。知径围绕学习科学中的三个关键机制重新设计：
+
+1. **诊断先于教学**——先分析目标、资料与痛点，再决定从哪里开始、用什么方式讲。
+2. **主动加工优于被动阅读**——苏格拉底式提问、费曼复述、随堂测验、间隔复习，逼你把知识从「看过」变成「说得出、做得到」。
+3. **学习是一个闭环**——目标 → 知识地图 → 路径 → 辅导 → 练习 → 复习 → 进度，每一步都有记录，下一次知道该做什么。
+
+---
+
+## 核心功能
+
+### 1. 创建学习目标，导入自己的资料
+- 输入学习主题、期望成果、当前水平和每日可用时间；
+- 支持上传 PDF / Word(.docx) / Markdown / 文本资料，或直接粘贴讲义内容；
+- 资料会被切块并建立本地检索索引（BM25，中文友好），AI 回答时引用原文片段。
+
+### 2. 学习痛点是一等公民
+- 用预设标签 + 自由描述记录「概念太抽象」「不会动手」「记不住」「没动力」等真实困难；
+- AI 将痛点分类、关联到具体概念，并给出可执行的教学策略；
+- 痛点会进入后续每一次导师对话的上下文，不会被遗忘。
+
+### 3. AI 分析与知识地图
+- AI 输出结构化分析：水平评估、推荐学习方式、核心概念（难度/重要性/前置关系）、分阶段学习路径与检查点、诊断问题；
+- 每个概念独立追踪掌握度（0–100），按阶段展示为知识地图。
+
+### 4. 六种 AI 导师模式
+| 模式 | 适合场景 |
+| --- | --- |
+| 🧭 苏格拉底引导 | 不直接给答案，用逐级提示带你想到答案 |
+| 📖 系统讲解 | 直觉 → 定义 → 结构 → 易错点，把概念讲透 |
+| 💡 举例说明 | 生活化类比 + 具体场景，建立第一层直觉 |
+| 💻 代码实战 | 可运行代码、逐行解释、动手小任务 |
+| ✅ 随堂测验 | 自动出题、即时判分、逐题解析 |
+| 🎤 费曼复述 | 你讲给 AI 听，它找出理解漏洞并追问 |
+
+对话以 SSE 流式输出，支持引用资料、下一步建议、随时停止、一键保存学习笔记。
+
+### 5. 间隔复习与进度追踪
+- 从概念自动生成问答闪卡，按 SM-2 简化算法安排复习（忘记 / 困难 / 记得 / 简单）；
+- 仪表盘呈现连续学习天数、总体进度、待复习、待解决痛点、最近动态；
+- 目标详情聚合知识地图、资料、痛点、笔记，随时知道「下一步做什么」。
+
+### 6. 任意 OpenAI 兼容模型
+- 内置 DeepSeek / OpenAI / Ollama / 自定义接口预设；
+- 在应用内「设置」页填写 API Key，或通过 `.env.local` 配置；Key 仅保存在本机；
+- **演示模式**：没有配置 Key 也能完整体验全部流程（内置示例内容）。
+
+---
+
+## 界面预览
+
+以下截图由 `pnpm test:e2e` 自动生成（桌面 1440×900 全页），完整清单见 [`docs/screenshots/`](docs/screenshots/)。
+
+| 仪表盘 | 目标详情 |
+| --- | --- |
+| ![仪表盘](docs/screenshots/dashboard.png) | ![目标详情](docs/screenshots/goal-detail.png) |
+
+| 新建目标 · AI 分析 | AI 导师对话 |
+| --- | --- |
+| ![AI 分析](docs/screenshots/wizard-analysis.png) | ![AI 导师](docs/screenshots/tutor-chat.png) |
+
+| 间隔复习 | 模型设置 |
+| --- | --- |
+| ![复习中心](docs/screenshots/review.png) | ![设置](docs/screenshots/settings.png) |
+
+移动端 390px 适配见 [`docs/screenshots/mobile-dashboard.png`](docs/screenshots/mobile-dashboard.png) 与 [`docs/screenshots/mobile-tutor.png`](docs/screenshots/mobile-tutor.png)。
+
+---
+
+## 学习闭环
+
+```mermaid
+flowchart LR
+    A[输入目标与资料] --> B[录入学习痛点]
+    B --> C[AI 诊断与知识地图]
+    C --> D[分阶段学习路径]
+    D --> E[六种模式 AI 辅导]
+    E --> F[随堂测验 / 费曼复述]
+    F --> G[生成闪卡与间隔复习]
+    G --> H[掌握度与进度更新]
+    H --> D
+```
+
+---
+
+## 快速开始
+
+环境要求：**Node.js ≥ 22.13**（推荐 24 LTS；项目使用内置 `node:sqlite`，无需安装数据库。Node 22.5–22.12 需追加 `NODE_OPTIONS=--experimental-sqlite`）、**pnpm ≥ 9**。
+
+```bash
+# 1. 安装依赖
+pnpm install
+
+# 2. 启动开发服务器（仅开发调试时使用）
+pnpm dev
+
+# 3. 打开浏览器
+# http://localhost:3000
+```
+
+首次启动会在 `data/zhijing.db` 自动创建数据库，并写入一个完整的示例学习目标「用 Python 做电商销售分析」——无需配置 API Key 即可体验全部页面（AI 回复来自演示模式）。
+
+### Windows 一键启动（推荐日常使用）
+
+双击项目根目录的 [`启动知径.bat`](启动知径.bat)：
+
+- 首次运行会自动检查 Node.js / pnpm，并安装依赖；
+- 如果还没构建（或源码有改动），会自动执行一次生产构建（约 1–2 分钟），之后启动非常快；
+- 使用 **生产模式** 启动，并自动打开浏览器 `http://127.0.0.1:3000`；
+- 停止服务：在黑色窗口按 **Ctrl+C**，然后按 **Y** 确认即可。
+
+> 不要日常使用 `pnpm dev` 双击启动：开发模式会按需编译页面并生成数百 MB 的 `.next` 缓存，首屏和切换页面都会明显变慢。BAT 已默认使用生产模式。
+
+### 项目体积说明
+
+源码、文档、截图和你的学习数据加起来通常只有约 10 MB；目录看起来大，主要是：
+
+| 目录 | 典型大小 | 说明 |
+| --- | --- | --- |
+| `node_modules/` | ~600 MB（逻辑大小） | Next.js / React / PDF 解析 / 图标等依赖；pnpm 用硬链接共享，实际磁盘占用会低于这个数字 |
+| `.next/` | 生产模式约 7–20 MB；开发模式可达 300 MB+ | 构建产物与编译缓存；`启动知径.bat` 使用生产模式，并在重新构建后自动清理 `.next/cache` |
+| `data/` | 几 MB | 你的 SQLite 学习数据（**不要删除**） |
+| `docs/`、`src/`、`tests/` | < 10 MB | 源码、文档与测试 |
+
+如需释放空间，可双击 [`清理缓存.bat`](清理缓存.bat)：它只删除 `.next`、测试报告等构建缓存，**不会碰 `data/zhijing.db`**；下次启动会自动重新构建。
+
+> 另外，Playwright 的 Chromium 浏览器（约 200 MB）安装在系统用户目录，不在项目目录内，只有运行 `pnpm test:e2e` 时才需要。
+
+生产构建：
+
+```bash
+pnpm build
+pnpm start
+```
+
+---
+
+## 配置 LLM
+
+有两种方式，优先级：**设置页保存的配置 > 环境变量 > 演示模式**。
+
+### 方式 A：应用内设置（推荐给本地使用）
+
+1. 打开「模型与设置」；
+2. 选择预设（DeepSeek / OpenAI / Ollama / 自定义）；
+3. 填写 API Key（Ollama 无需 Key）；
+4. 保存后点击「测试连接」。
+
+Key 保存在本地 SQLite `settings` 表中，不会返回给浏览器或上传到任何第三方。
+
+### 方式 B：环境变量
+
+```bash
+cp .env.example .env.local
+```
+
+```dotenv
+DEEPSEEK_API_KEY=sk-xxxxxxxx
+# 或任意 OpenAI 兼容服务
+# LLM_API_KEY=sk-xxxxxxxx
+# LLM_BASE_URL=https://api.deepseek.com/v1
+# LLM_MODEL=deepseek-chat
+# 可选：数据库文件位置（默认 ./data/zhijing.db）
+# ZHIJING_DB_PATH=
+```
+
+修改 `.env.local` 后重启 `pnpm dev`。
+
+### 接口要求
+
+任何兼容 `POST {baseUrl}/chat/completions` 的服务都可以接入，需支持：
+
+- OpenAI 消息格式（`messages: [{role, content}]`）；
+- 流式 `stream: true` 的 SSE `data:` 分块；
+- 可选 `response_format: { type: "json_object" }`（结构化分析会做容错解析）。
+
+已在预设中覆盖的服务：DeepSeek、OpenAI、Ollama（`qwen2.5` 等）与自定义 OpenAI 兼容接口。真实调用的可用性取决于你的 Key / 本地模型；无 Key 时应用自动使用演示模式，全部页面与流程仍可体验。第三方中转只需改 Base URL 与模型名。
+
+---
+
+## 使用流程
+
+1. **新建学习目标**：填写「学什么 / 想达到什么 / 现在什么水平 / 每天能学多久」，上传资料，写下痛点；
+2. **查看 AI 分析**：确认知识地图与学习路径，创建目标；
+3. **开始学习**：进入目标详情，点击「开始学习」，选择模式与概念，与 AI 导师对话；
+4. **练习与复述**：随时发起随堂测验；用费曼模式讲一遍；让 AI 生成复习卡；
+5. **复习与回顾**：在复习中心完成当日到期卡片；在仪表盘查看进度与下一步建议。
+
+> 建议：每次学习控制 15–30 分钟，以「完成一个小输出」结束（一段解释、一道题、一段代码），比单纯阅读更有效。
+
+---
+
+## 技术架构
+
+| 层 | 技术 | 说明 |
+| --- | --- | --- |
+| 前端 | Next.js 15 App Router + React 19 + TypeScript | 服务端渲染 + 客户端交互，自研 CSS 设计系统 |
+| 样式 | 原生 CSS + CSS Modules | 纸感 / 墨绿 / 朱砂的学习工作室视觉 |
+| 后端 | Next.js Route Handlers（Node.js Runtime） | 同一进程提供页面与 API，部署简单 |
+| 存储 | SQLite（Node 内置 `node:sqlite`） | 零外部依赖；数据默认在 `data/zhijing.db` |
+| LLM | OpenAI 兼容 Chat Completions | 支持流式 SSE、结构化 JSON、演示模式 |
+| 检索 | 本地 BM25 + 中文 bigram 切词 | 资料切片检索，生成引用，无需向量数据库 |
+| 文档解析 | pdfjs-dist / mammoth | PDF 文本层、Word(.docx)、Markdown/文本 |
+| 渲染 | react-markdown + KaTeX + highlight.js | 公式、代码高亮、表格 |
+
+### 目录结构
+
+```
+src/
+├─ app/                     # 页面与 API 路由
+│  ├─ page.tsx              # 仪表盘
+│  ├─ goals/new/            # 新建目标向导
+│  ├─ goals/[id]/           # 目标详情
+│  ├─ goals/[id]/tutor/     # AI 导师对话
+│  ├─ review/               # 复习中心
+│  ├─ settings/             # 模型与数据设置
+│  └─ api/                  # Route Handlers（见下方 API 一览）
+├─ components/              # AppShell、共享 UI、页面组件
+└─ lib/
+   ├─ types.ts              # 前后端类型契约
+   ├─ db.ts / schema.ts     # SQLite 连接与表结构
+   ├─ repo.ts               # 数据访问层
+   ├─ seed.ts               # 演示数据
+   ├─ llm/                  # LLM 客户端与流式处理
+   ├─ prompts.ts            # 教学提示词
+   ├─ retrieval.ts          # 资料检索
+   ├─ mock-ai.ts            # 演示模式内容
+   ├─ settings.ts           # 模型配置解析
+   ├─ extract.ts            # 文件文本抽取
+   └─ text.ts               # 切块 / 分词 / BM25
+data/                       # SQLite 数据（首次启动生成，已 gitignore）
+public/samples/             # 示例学习资料
+scripts/                    # API 烟测与辅助脚本
+tests/                      # Playwright E2E（见 docs/testing.md）
+docs/                       # 验收文档与界面截图（testing.md / screenshots/）
+playwright.config.ts        # E2E 配置（不自动启动 webServer）
+```
+
+### API 一览
+
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET | `/api/dashboard` | 仪表盘聚合数据 |
+| GET/POST | `/api/goals` | 目标列表 / 创建目标 |
+| GET/PATCH/DELETE | `/api/goals/[id]` | 目标详情 / 更新 / 删除 |
+| POST | `/api/goals/analyze` | AI 分析目标、痛点与资料 |
+| POST | `/api/extract` | 上传文件并抽取文本 |
+| POST | `/api/goals/[id]/materials` | 新增学习资料（JSON 或 multipart） |
+| DELETE | `/api/materials/[id]` | 删除资料 |
+| POST | `/api/goals/[id]/pain-points` | 新增学习痛点 |
+| PATCH | `/api/pain-points/[id]` | 更新痛点状态 / 策略 |
+| PATCH | `/api/concepts/[id]` | 更新概念掌握度 / 状态 |
+| GET/POST | `/api/goals/[id]/chat` | 对话历史 / 流式对话（SSE） |
+| POST | `/api/goals/[id]/quiz` | 生成随堂测验 |
+| POST | `/api/goals/[id]/quiz/grade` | 测验判分 |
+| POST | `/api/goals/[id]/flashcards/generate` | 生成复习闪卡 |
+| GET | `/api/flashcards/due?limit=&goalId=` | 待复习卡片（可按目标过滤） |
+| POST | `/api/flashcards/[id]/review` | 提交复习评分 |
+| GET/POST | `/api/goals/[id]/notes` | 笔记列表 / AI 生成笔记 |
+| DELETE | `/api/notes/[id]` | 删除笔记 |
+| GET/PUT | `/api/settings` | 读取 / 保存模型配置 |
+| POST | `/api/settings/test` | 测试模型连通性 |
+| POST | `/api/settings/reset` | 清空数据并恢复演示数据 |
+
+完整字段定义见 `src/lib/types.ts`。
+
+---
+
+## 测试与验证
+
+```bash
+# TypeScript 类型检查（package.json 也提供了 pnpm typecheck）
+pnpm exec tsc --noEmit
+
+# API 烟测（需要先启动服务；默认 http://127.0.0.1:3000）
+pnpm smoke              # 等价于 node scripts/smoke.mjs
+
+# 浏览器 E2E（需要先启动服务；首次需安装 Chromium）
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
+- **烟测**覆盖：仪表盘、目标详情、AI 分析、SSE 对话、测验生成与判分、闪卡生成与复习、笔记、模型设置与连接测试。
+- **E2E**覆盖：仪表盘、目标详情五个 tab、新建目标向导（含 AI 分析结果）、复习中心、模型设置、AI 导师流式对话，以及 390px 移动端布局；用例串行执行，首次失败会自动重试并保留 trace，截图输出到 `docs/screenshots/`（见上方「界面预览」）。
+- 详细的前置条件、用例矩阵、失败排查与测试对数据的影响，见 [`docs/testing.md`](docs/testing.md)。
+- 注意：`pnpm build` 与 `pnpm dev` 共用 `.next` 目录，验证生产构建前请先停止 dev server；E2E 配置不会自动启动服务。
+- 当前验收环境未配置真实 API Key，全部流程在**演示模式**下验证；接入真实模型后，请自行确认 Key、网络与模型名称可用。
+
+---
+
+## 数据与隐私
+
+- 所有学习数据、资料与配置均存放在本机 `data/zhijing.db`；除调用你配置的 LLM 接口外，应用不向其他服务器发送数据。
+- API Key 仅保存在本地 SQLite；接口返回时会脱敏。若希望更安全，可使用 `.env.local`（同样仅存本地，但不会被写入数据库）。
+- 上传资料会被发送给所配置的 LLM 作为上下文片段。涉及机密资料时请使用本地 Ollama 或自行脱敏。
+- 「清空数据」会删除所有目标、资料与对话，并恢复演示数据；请谨慎操作。
+
+---
+
+## 设计取舍
+
+- **为什么不做纯聊天？** 围绕目标、概念、痛点建模，才能让 AI 知道「你现在该学什么」，并让学习进展可累积。
+- **为什么用本地 BM25 而不是向量库？** 个人学习场景资料规模有限，BM25 + 中文 bigram 已足够，且零额外依赖、启动快、隐私好。后续可替换为 embedding 检索。
+- **为什么用 SQLite 文件？** 单用户本地应用，无需运维；Node 24 内置 `node:sqlite`，免去原生模块编译。
+- **为什么保留演示模式？** 学习工具的第一体验不应被 API Key 阻断；同时方便开发与测试。
+
+---
+
+## Roadmap
+
+- [ ] 向量检索 / 混合检索，提升长资料问答精度
+- [ ] 更多练习题型与代码沙箱执行
+- [ ] 学习计划日历与提醒
+- [ ] 多用户 / 云同步（当前为单用户本地版）
+- [ ] 学习报告导出 PDF / Markdown
+- [ ] 移动端 PWA
+
+---
+
+## License
+
+MIT
