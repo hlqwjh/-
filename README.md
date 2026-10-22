@@ -56,99 +56,18 @@
 
 ---
 
-## 界面预览
+### Windows 桌面安装包（推荐交付给普通用户）
 
-以下截图由 `pnpm test:e2e` 自动生成（桌面 1440×900 全页），完整清单见 [`docs/screenshots/`](docs/screenshots/)。
+- 安装包约 **94 MB**（Electron 运行时 + Next standalone；`compression: maximum` 实测压缩率约 0.26）；
+- 详细构建、排障与验证见 [`docs/DESKTOP.md`](docs/DESKTOP.md)，
 
-| 仪表盘 | 目标详情 |
-| --- | --- |
-| ![仪表盘](docs/screenshots/dashboard.png) | ![目标详情](docs/screenshots/goal-detail.png) |
-
-| 新建目标 · AI 分析 | AI 导师对话 |
-| --- | --- |
-| ![AI 分析](docs/screenshots/wizard-analysis.png) | ![AI 导师](docs/screenshots/tutor-chat.png) |
-
-| 间隔复习 | 模型设置 |
-| --- | --- |
-| ![复习中心](docs/screenshots/review.png) | ![设置](docs/screenshots/settings.png) |
-
-移动端 390px 适配见 [`docs/screenshots/mobile-dashboard.png`](docs/screenshots/mobile-dashboard.png) 与 [`docs/screenshots/mobile-tutor.png`](docs/screenshots/mobile-tutor.png)。
-
----
-
-## 学习闭环
-
-```mermaid
-flowchart LR
-    A[输入目标与资料] --> B[录入学习痛点]
-    B --> C[AI 诊断与知识地图]
-    C --> D[分阶段学习路径]
-    D --> E[六种模式 AI 辅导]
-    E --> F[随堂测验 / 费曼复述]
-    F --> G[生成闪卡与间隔复习]
-    G --> H[掌握度与进度更新]
-    H --> D
-```
-
----
-
-## 快速开始
-
-环境要求：**Node.js ≥ 22.13**（推荐 24 LTS；项目使用内置 `node:sqlite`，无需安装数据库。Node 22.5–22.12 需追加 `NODE_OPTIONS=--experimental-sqlite`）、**pnpm ≥ 9**。
-
-```bash
-# 1. 安装依赖
-pnpm install
-
-# 2. 启动开发服务器（仅开发调试时使用）
-pnpm dev
-
-# 3. 打开浏览器
-# http://localhost:3000
-```
-
-首次启动会在 `data/zhijing.db` 自动创建数据库，并写入一个完整的示例学习目标「用 Python 做电商销售分析」——无需配置 API Key 即可体验全部页面（AI 回复来自演示模式）。
-
-### Windows 一键启动（推荐日常使用）
-
-双击项目根目录的 [`启动知径.bat`](启动知径.bat)：
-
-- 首次运行会自动检查 Node.js / pnpm，并安装依赖；
-- 如果还没构建（或源码有改动），会自动执行一次生产构建（约 1–2 分钟），之后启动非常快；
-- 使用 **生产模式** 启动，并自动打开浏览器 `http://127.0.0.1:3000`；
-- 停止服务：在黑色窗口按 **Ctrl+C**，然后按 **Y** 确认即可。
-
-> 不要日常使用 `pnpm dev` 双击启动：开发模式会按需编译页面并生成数百 MB 的 `.next` 缓存，首屏和切换页面都会明显变慢。BAT 已默认使用生产模式。
-
-### 项目体积说明
-
-源码、文档、截图和你的学习数据加起来通常只有约 10 MB；目录看起来大，主要是：
-
-| 目录 | 典型大小 | 说明 |
-| --- | --- | --- |
-| `node_modules/` | ~600 MB（逻辑大小） | Next.js / React / PDF 解析 / 图标等依赖；pnpm 用硬链接共享，实际磁盘占用会低于这个数字 |
-| `.next/` | 生产模式约 7–20 MB；开发模式可达 300 MB+ | 构建产物与编译缓存；`启动知径.bat` 使用生产模式，并在重新构建后自动清理 `.next/cache` |
-| `data/` | 几 MB | 你的 SQLite 学习数据（**不要删除**） |
-| `docs/`、`src/`、`tests/` | < 10 MB | 源码、文档与测试 |
-
-如需释放空间，可双击 [`清理缓存.bat`](清理缓存.bat)：它只删除 `.next`、测试报告等构建缓存，**不会碰 `data/zhijing.db`**；下次启动会自动重新构建。
-
-> 另外，Playwright 的 Chromium 浏览器（约 200 MB）安装在系统用户目录，不在项目目录内，只有运行 `pnpm test:e2e` 时才需要。
-
-生产构建：
-
-```bash
-pnpm build
-pnpm start
-```
+> 安全说明：`pnpm start` 与桌面版都只监听 `127.0.0.1`，不会暴露到局域网。若自行部署到服务器，请额外加反向代理鉴权。
 
 ---
 
 ## 配置 LLM
 
-有两种方式，优先级：**设置页保存的配置 > 环境变量 > 演示模式**。
-
-### 方式 A：应用内设置（推荐给本地使用）
+### 应用内设置
 
 1. 打开「模型与设置」；
 2. 选择预设（DeepSeek / OpenAI / Ollama / 自定义）；
@@ -156,26 +75,6 @@ pnpm start
 4. 保存后点击「测试连接」。
 
 Key 保存在本地 SQLite `settings` 表中，不会返回给浏览器或上传到任何第三方。
-
-### 方式 B：环境变量
-
-```bash
-cp .env.example .env.local
-```
-
-```dotenv
-DEEPSEEK_API_KEY=sk-xxxxxxxx
-# 或任意 OpenAI 兼容服务
-# LLM_API_KEY=sk-xxxxxxxx
-# LLM_BASE_URL=https://api.deepseek.com/v1
-# LLM_MODEL=deepseek-chat
-# 可选：数据库文件位置（默认 ./data/zhijing.db）
-# ZHIJING_DB_PATH=
-```
-
-修改 `.env.local` 后重启 `pnpm dev`。
-
-### 接口要求
 
 任何兼容 `POST {baseUrl}/chat/completions` 的服务都可以接入，需支持：
 
@@ -212,39 +111,6 @@ DEEPSEEK_API_KEY=sk-xxxxxxxx
 | 文档解析 | pdfjs-dist / mammoth | PDF 文本层、Word(.docx)、Markdown/文本 |
 | 渲染 | react-markdown + KaTeX + highlight.js | 公式、代码高亮、表格 |
 
-### 目录结构
-
-```
-src/
-├─ app/                     # 页面与 API 路由
-│  ├─ page.tsx              # 仪表盘
-│  ├─ goals/new/            # 新建目标向导
-│  ├─ goals/[id]/           # 目标详情
-│  ├─ goals/[id]/tutor/     # AI 导师对话
-│  ├─ review/               # 复习中心
-│  ├─ settings/             # 模型与数据设置
-│  └─ api/                  # Route Handlers（见下方 API 一览）
-├─ components/              # AppShell、共享 UI、页面组件
-└─ lib/
-   ├─ types.ts              # 前后端类型契约
-   ├─ db.ts / schema.ts     # SQLite 连接与表结构
-   ├─ repo.ts               # 数据访问层
-   ├─ seed.ts               # 演示数据
-   ├─ llm/                  # LLM 客户端与流式处理
-   ├─ prompts.ts            # 教学提示词
-   ├─ retrieval.ts          # 资料检索
-   ├─ mock-ai.ts            # 演示模式内容
-   ├─ settings.ts           # 模型配置解析
-   ├─ extract.ts            # 文件文本抽取
-   └─ text.ts               # 切块 / 分词 / BM25
-data/                       # SQLite 数据（首次启动生成，已 gitignore）
-public/samples/             # 示例学习资料
-scripts/                    # API 烟测与辅助脚本
-tests/                      # Playwright E2E（见 docs/testing.md）
-docs/                       # 验收文档与界面截图（testing.md / screenshots/）
-playwright.config.ts        # E2E 配置（不自动启动 webServer）
-```
-
 ### API 一览
 
 | 方法 | 路径 | 说明 |
@@ -271,38 +137,22 @@ playwright.config.ts        # E2E 配置（不自动启动 webServer）
 | POST | `/api/settings/test` | 测试模型连通性 |
 | POST | `/api/settings/reset` | 清空数据并恢复演示数据 |
 
-完整字段定义见 `src/lib/types.ts`。
-
 ---
 
 ## 测试与验证
 
-```bash
-# TypeScript 类型检查（package.json 也提供了 pnpm typecheck）
-pnpm exec tsc --noEmit
-
-# API 烟测（需要先启动服务；默认 http://127.0.0.1:3000）
-pnpm smoke              # 等价于 node scripts/smoke.mjs
-
-# 浏览器 E2E（需要先启动服务；首次需安装 Chromium）
-pnpm exec playwright install chromium
-pnpm test:e2e
-```
-
 - **烟测**覆盖：仪表盘、目标详情、AI 分析、SSE 对话、测验生成与判分、闪卡生成与复习、笔记、模型设置与连接测试。
 - **E2E**覆盖：仪表盘、目标详情五个 tab、新建目标向导（含 AI 分析结果）、复习中心、模型设置、AI 导师流式对话，以及 390px 移动端布局；用例串行执行，首次失败会自动重试并保留 trace，截图输出到 `docs/screenshots/`（见上方「界面预览」）。
 - 详细的前置条件、用例矩阵、失败排查与测试对数据的影响，见 [`docs/testing.md`](docs/testing.md)。
-- 注意：`pnpm build` 与 `pnpm dev` 共用 `.next` 目录，验证生产构建前请先停止 dev server；E2E 配置不会自动启动服务。
 - 当前验收环境未配置真实 API Key，全部流程在**演示模式**下验证；接入真实模型后，请自行确认 Key、网络与模型名称可用。
 
 ---
 
 ## 数据与隐私
 
-- 所有学习数据、资料与配置均存放在本机 `data/zhijing.db`；除调用你配置的 LLM 接口外，应用不向其他服务器发送数据。
-- API Key 仅保存在本地 SQLite；接口返回时会脱敏。若希望更安全，可使用 `.env.local`（同样仅存本地，但不会被写入数据库）。
+- 所有学习数据、资料与配置均存放在本机 除调用你配置的 LLM 接口外，应用不向其他服务器发送数据。
+- API Key 仅保存在本地 SQLite；接口返回时会脱敏。
 - 上传资料会被发送给所配置的 LLM 作为上下文片段。涉及机密资料时请使用本地 Ollama 或自行脱敏。
-- 「清空数据」会删除所有目标、资料与对话，并恢复演示数据；请谨慎操作。
 
 ---
 
@@ -313,19 +163,4 @@ pnpm test:e2e
 - **为什么用 SQLite 文件？** 单用户本地应用，无需运维；Node 24 内置 `node:sqlite`，免去原生模块编译。
 - **为什么保留演示模式？** 学习工具的第一体验不应被 API Key 阻断；同时方便开发与测试。
 
----
 
-## Roadmap
-
-- [ ] 向量检索 / 混合检索，提升长资料问答精度
-- [ ] 更多练习题型与代码沙箱执行
-- [ ] 学习计划日历与提醒
-- [ ] 多用户 / 云同步（当前为单用户本地版）
-- [ ] 学习报告导出 PDF / Markdown
-- [ ] 移动端 PWA
-
----
-
-## License
-
-MIT
